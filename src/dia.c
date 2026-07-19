@@ -371,8 +371,8 @@ int diaShowIpEditor(char *text, int maxLen)
         }
 
         diaDrawPS5FooterIconText(TRIANGLE_ICON, "Show Keyboard", screenWidth - 360, screenHeight - 20, footerFont);
-        diaDrawPS5FooterIconText(SQUARE_ICON, "Save", screenWidth - 206, screenHeight - 20, footerFont);
-        diaDrawPS5FooterIconText(CIRCLE_ICON, "Cancel", screenWidth - 106, screenHeight - 20, footerFont);
+        diaDrawPS5FooterIconText(SQUARE_ICON, _l(_STR_SAVE), screenWidth - 206, screenHeight - 20, footerFont);
+        diaDrawPS5FooterIconText(CIRCLE_ICON, _l(_STR_CANCEL), screenWidth - 106, screenHeight - 20, footerFont);
 
         rmEndFrame();
         if (pressAnim > 0)
@@ -549,7 +549,7 @@ static int diaShowPS5Keyb(char *text, int maxLen, int hide_text, const char *tit
         if (selected >= keyCount)
             selected = keyCount - 1;
 
-        fntRenderString(titleFont, startX, titleY, ALIGN_LEFT, 0, 0, title != NULL ? title : "Keyboard", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+        fntRenderString(titleFont, startX, titleY, ALIGN_LEFT, 0, 0, title != NULL ? title : _l(_STR_KEYBOARD), GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
         fntRenderString(headerFont, startX + keyW / 25, inputY, ALIGN_LEFT, 0, 0, display, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
 
         for (i = 0; i < keyCount; i++) {
@@ -574,7 +574,7 @@ static int diaShowPS5Keyb(char *text, int maxLen, int hide_text, const char *tit
         circleIcon = thmGetTexture(CIRCLE_ICON);
         if (circleIcon && circleIcon->Mem)
             rmDrawPixmap(circleIcon, screenWidth - startX - 52, footerY, ALIGN_LEFT | ALIGN_VCENTER, 14, 14, 1, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
-        fntRenderString(semiFont, screenWidth - startX - 32, footerY, ALIGN_LEFT | ALIGN_VCENTER, 0, 0, "Cancel", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+        fntRenderString(semiFont, screenWidth - startX - 32, footerY, ALIGN_LEFT | ALIGN_VCENTER, 0, 0, _l(_STR_CANCEL), GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
 
         rmEndFrame();
 

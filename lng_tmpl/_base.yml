@@ -694,3 +694,25 @@ gui_strings:
   string: Cheat Selection
 - label: HDD_HINT
   string: Only one HDD allowed, enabling locks APA or GPT.
+- label: CLOSE
+  string: Close
+- label: SAVE
+  string: Save
+- label: GAME_OPTIONS
+  string: Game Options
+- label: SAVE_SUCCESSFUL
+  string: Save Successful
+- label: CFM_VMODE_CHANGE_NOW
+  string: Change video output now?
+- label: CFM_VMODE_REVERT_INFO
+  string: If the screen goes black, wait 10 seconds and it will revert.
+- label: CFM_VMODE_IF_VISIBLE
+  string: If you can see this dialog, select Yes.
+- label: CFM_VMODE_REVERTING
+  string: Reverting in %d seconds...
+- label: CHECK_SMB_CONNECTION
+  string: Check SMB Connection
+- label: SMB_GAMES
+  string: SMB Games
+- label: KEYBOARD
+  string: Keyboard

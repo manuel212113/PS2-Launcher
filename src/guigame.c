@@ -181,7 +181,7 @@ static int guiGameVMCUpdater(int modified)
     }
 
     if ((vmc_operation == OPERATION_CREATING) || (vmc_operation == OPERATION_ABORTING)) {
-        int result = fileXioDevctl("genvmc:", 0xC0DE0003, NULL, 0, (void *)&vmc_status, sizeof(vmc_status));
+        int result = fileXioDevctl("genvmc:", GENVMC_CMD_STATUS, NULL, 0, (void *)&vmc_status, sizeof(vmc_status));
         if (result == 0) {
             diaSetLabel(diaVMC, VMC_STATUS, vmc_status.VMC_msg);
             diaSetInt(diaVMC, VMC_PROGRESS, vmc_status.VMC_progress);
@@ -258,7 +258,7 @@ static int guiGameShowVMCConfig(int id, item_list_t *support, char *VMCName, int
             } else if (vmc_operation == OPERATION_END) { // User closed creation dialog of VMC
                 break;
             } else if (vmc_operation == OPERATION_CREATING) { // User canceled creation of VMC
-                fileXioDevctl("genvmc:", 0xC0DE0002, NULL, 0, NULL, 0);
+                fileXioDevctl("genvmc:", GENVMC_CMD_FORMAT, NULL, 0, NULL, 0);
                 vmc_operation = OPERATION_ABORTING;
             }
         } else if (result == VMC_BUTTON_DELETE) {

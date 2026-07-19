@@ -642,7 +642,7 @@ static void ethLaunchGame(item_list_t *itemList, int id, config_set_t *configSet
         }
 
         for (i = 0; i < size_smb_mcemu_irx; i++) {
-            if (((u32 *)&smb_mcemu_irx)[i] == (0xC0DEFAC0 + vmc_id)) {
+            if (((u32 *)&smb_mcemu_irx)[i] == (VMC_MAGIC_COOKIE + vmc_id)) {
                 if (smb_vmc_infos.active)
                     size_mcemu_irx = size_smb_mcemu_irx;
                 memcpy(&((u32 *)&smb_mcemu_irx)[i], &smb_vmc_infos, sizeof(smb_vmc_infos_t));

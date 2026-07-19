@@ -1727,7 +1727,6 @@ int guiMsgBox(const char *text, int addAccept, struct UIItem *ui)
 
         readPads();
 
-        extern int gPS5Mode;
         if (gPS5Mode) {
             if (addAccept) {
                 if (getKeyOn(KEY_LEFT) || getKeyOn(KEY_RIGHT))
@@ -1752,18 +1751,18 @@ int guiMsgBox(const char *text, int addAccept, struct UIItem *ui)
             guiShow();
 
         if (gPS5Mode) {
-            rmDrawRect(0, 0, screenWidth, screenHeight, GS_SETREG_RGBA(0, 0, 0, 0x60));
+            rmDrawRect(0, 0, screenWidth, screenHeight, PS5_DLG_OVERLAY_COLOR);
 
             const char *displayMsg = text;
             if (strstr(text, "saved") != NULL || strstr(text, "Saved") != NULL) {
-                displayMsg = "Save Successful";
+                displayMsg = _l(_STR_SAVE_SUCCESSFUL);
             }
 
-            int dlgW = screenWidth - 96;
-            if (dlgW > 420)
-                dlgW = 420;
-            if (dlgW < 280)
-                dlgW = screenWidth - 24;
+            int dlgW = screenWidth - PS5_DLG_PAD_X;
+            if (dlgW > PS5_DLG_MAX_WIDTH)
+                dlgW = PS5_DLG_MAX_WIDTH;
+            if (dlgW < PS5_DLG_MIN_WIDTH)
+                dlgW = screenWidth - PS5_DLG_PAD_SMALL;
             int textW = dlgW - 48;
             char bodyText[256];
             strncpy(bodyText, displayMsg, sizeof(bodyText) - 1);
@@ -1787,24 +1786,21 @@ int guiMsgBox(const char *text, int addAccept, struct UIItem *ui)
             int bodyY = dlgY + topPad;
             int buttonY = dlgY + dlgH - bottomPad;
 
-            rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
-            rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
+            rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, PS5_DLG_BORDER_RADIUS, PS5_DLG_BORDER_COLOR);
+            rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, PS5_DLG_FILL_RADIUS, PS5_DLG_FILL_COLOR);
 
-            fntRenderString(gTheme->fonts[0], textX, bodyY, ALIGN_LEFT, textW, bodyLines * MENU_ITEM_HEIGHT, bodyText, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+            fntRenderString(gTheme->fonts[0], textX, bodyY, ALIGN_LEFT, textW, bodyLines * MENU_ITEM_HEIGHT, bodyText, PS5_TEXT_COLOR);
             if (addAccept) {
                 int yesX = dlgX + dlgW - 152;
                 int noX = dlgX + dlgW - 76;
-                fntRenderString(ps5ConfirmFocus ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], yesX, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Yes", ps5ConfirmFocus ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0x78, 0x78, 0x78, 0x70));
-                fntRenderString(!ps5ConfirmFocus ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], noX, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "No", !ps5ConfirmFocus ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0x78, 0x78, 0x78, 0x70));
+                fntRenderString(ps5ConfirmFocus ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], yesX, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_YES), ps5ConfirmFocus ? PS5_TEXT_COLOR : PS5_BTN_UNFOCUSED);
+                fntRenderString(!ps5ConfirmFocus ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], noX, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_NO), !ps5ConfirmFocus ? PS5_TEXT_COLOR : PS5_BTN_UNFOCUSED);
             } else {
-                fntRenderString(thmGetPS5SemiBoldFont(), dlgX + dlgW - 42, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Close", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+                fntRenderString(thmGetPS5SemiBoldFont(), dlgX + dlgW - 42, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_CLOSE), PS5_TEXT_COLOR);
             }
 
         } else {
-            rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
-
-            rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
-            rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+            guiDrawClassicDialogFrame();
 
             fntRenderString(gTheme->fonts[0], screenWidth >> 1, gTheme->usedHeight >> 1, ALIGN_CENTER, 0, 0, text, gTheme->textColor);
             guiDrawIconAndText(gSelectButton == KEY_CIRCLE ? CROSS_ICON : CIRCLE_ICON, _STR_BACK, gTheme->fonts[0], 500, 417, gTheme->selTextColor);
@@ -1847,6 +1843,13 @@ void guiGameHandleDeferedIO(int *ptr, struct UIItem *ui, int type, void *data)
     }
 }
 
+static void guiDrawClassicDialogFrame(void)
+{
+    rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
+    rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
+    rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+}
+
 void guiRenderTextScreen(const char *message)
 {
     guiStartFrame();
@@ -1854,9 +1857,9 @@ void guiRenderTextScreen(const char *message)
     if (gPS5Mode) {
         int waitFont = thmGetPS5SemiBoldFont();
         rmDrawRect(0, 0, screenWidth, screenHeight, GS_SETREG_RGBA(0, 0, 0, 0xFF));
-        rmDrawRoundedRect((screenWidth - 360) / 2 - 1, (screenHeight - 120) / 2 - 1, 362, 122, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
-        rmDrawRoundedRect((screenWidth - 360) / 2, (screenHeight - 120) / 2, 360, 120, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
-        fntRenderString(waitFont, screenWidth >> 1, screenHeight >> 1, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, message, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+        rmDrawRoundedRect((screenWidth - 360) / 2 - 1, (screenHeight - 120) / 2 - 1, 362, 122, PS5_DLG_BORDER_RADIUS, PS5_DLG_BORDER_COLOR);
+        rmDrawRoundedRect((screenWidth - 360) / 2, (screenHeight - 120) / 2, 360, 120, PS5_DLG_FILL_RADIUS, PS5_DLG_FILL_COLOR);
+        fntRenderString(waitFont, screenWidth >> 1, screenHeight >> 1, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, message, PS5_TEXT_COLOR);
     } else {
         guiShow();
         rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
@@ -1873,10 +1876,7 @@ void guiWarning(const char *text, int count)
 
     guiShow();
 
-    rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
-
-    rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
-    rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+    guiDrawClassicDialogFrame();
 
     fntRenderString(gTheme->fonts[0], screenWidth >> 1, gTheme->usedHeight >> 1, ALIGN_CENTER, screenWidth, screenHeight, text, gTheme->textColor);
 
@@ -1897,7 +1897,6 @@ int guiConfirmVideoModeChange(void)
 
         readPads();
 
-        extern int gPS5Mode;
         if (gPS5Mode) {
             if (getKeyOn(KEY_LEFT) || getKeyOn(KEY_RIGHT)) {
                 sfxPlay(SFX_CURSOR);
@@ -1918,15 +1917,16 @@ int guiConfirmVideoModeChange(void)
         guiShow();
 
         if (gPS5Mode) {
-            rmDrawRect(0, 0, screenWidth, screenHeight, GS_SETREG_RGBA(0, 0, 0, 0x60));
+            rmDrawRect(0, 0, screenWidth, screenHeight, PS5_DLG_OVERLAY_COLOR);
 
-            int dlgW = screenWidth - 96;
-            if (dlgW > 420)
-                dlgW = 420;
-            if (dlgW < 280)
-                dlgW = screenWidth - 24;
+            int dlgW = screenWidth - PS5_DLG_PAD_X;
+            if (dlgW > PS5_DLG_MAX_WIDTH)
+                dlgW = PS5_DLG_MAX_WIDTH;
+            if (dlgW < PS5_DLG_MIN_WIDTH)
+                dlgW = screenWidth - PS5_DLG_PAD_SMALL;
             int textW = dlgW - 48;
-            char bodyText[96] = "If the screen goes black, wait 10 seconds and it will revert.";
+            char bodyText[96];
+            snprintf(bodyText, sizeof(bodyText), "%s", _l(_STR_CFM_VMODE_REVERT_INFO));
             fntFitString(gTheme->fonts[0], bodyText, textW);
 
             int bodyLines = 1;
@@ -1947,24 +1947,21 @@ int guiConfirmVideoModeChange(void)
             int textX = dlgX + 24;
             int buttonY = dlgY + dlgH - bottomPad;
 
-            rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
-            rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
+            rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, PS5_DLG_BORDER_RADIUS, PS5_DLG_BORDER_COLOR);
+            rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, PS5_DLG_FILL_RADIUS, PS5_DLG_FILL_COLOR);
 
-            fntRenderString(gTheme->fonts[0], textX, dlgY + titleY, ALIGN_LEFT, 0, 0, "Change video output now?", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+            fntRenderString(gTheme->fonts[0], textX, dlgY + titleY, ALIGN_LEFT, 0, 0, _l(_STR_CFM_VMODE_CHANGE_NOW), PS5_TEXT_COLOR);
             fntRenderString(gTheme->fonts[0], textX, dlgY + bodyY, ALIGN_LEFT, textW, bodyLines * MENU_ITEM_HEIGHT, bodyText, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x60));
 
-            u64 yesColor = focusYes ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x24);
-            u64 cancelColor = !focusYes ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x24);
+            u64 yesColor = focusYes ? PS5_TEXT_COLOR : PS5_BTN_CANCEL_COLOR;
+            u64 cancelColor = !focusYes ? PS5_TEXT_COLOR : PS5_BTN_CANCEL_COLOR;
 
-            fntRenderString(focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 140, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Yes", yesColor);
-            fntRenderString(!focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 62, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Cancel", cancelColor);
+            fntRenderString(focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 140, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_YES), yesColor);
+            fntRenderString(!focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 62, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_CANCEL), cancelColor);
         } else {
-            rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
+            guiDrawClassicDialogFrame();
 
-            rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
-            rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
-
-            fntRenderString(gTheme->fonts[0], screenWidth >> 1, (gTheme->usedHeight >> 1) - 24, ALIGN_CENTER, 0, 0, "Change video output now?", gTheme->textColor);
+            fntRenderString(gTheme->fonts[0], screenWidth >> 1, (gTheme->usedHeight >> 1) - 24, ALIGN_CENTER, 0, 0, _l(_STR_CFM_VMODE_CHANGE_NOW), gTheme->textColor);
             fntRenderString(gTheme->fonts[0], screenWidth >> 1, gTheme->usedHeight >> 1, ALIGN_CENTER, 0, 0, "If the screen goes black,", gTheme->textColor);
             fntRenderString(gTheme->fonts[0], screenWidth >> 1, (gTheme->usedHeight >> 1) + 24, ALIGN_CENTER, 0, 0, "wait 10 seconds to revert.", gTheme->textColor);
             guiDrawIconAndText(gSelectButton == KEY_CIRCLE ? CROSS_ICON : CIRCLE_ICON, _STR_BACK, gTheme->fonts[0], 500, 417, gTheme->selTextColor);
@@ -1998,7 +1995,6 @@ int guiConfirmVideoMode(void)
 
         readPads();
 
-        extern int gPS5Mode;
         if (gPS5Mode) {
             if (getKeyOn(KEY_LEFT) || getKeyOn(KEY_RIGHT)) {
                 sfxPlay(SFX_CURSOR);
@@ -2027,15 +2023,16 @@ int guiConfirmVideoMode(void)
         guiShow();
 
         if (gPS5Mode) {
-            rmDrawRect(0, 0, screenWidth, screenHeight, GS_SETREG_RGBA(0, 0, 0, 0x60));
+            rmDrawRect(0, 0, screenWidth, screenHeight, PS5_DLG_OVERLAY_COLOR);
 
-            int dlgW = screenWidth - 96;
-            if (dlgW > 420)
-                dlgW = 420;
-            if (dlgW < 280)
-                dlgW = screenWidth - 24;
+            int dlgW = screenWidth - PS5_DLG_PAD_X;
+            if (dlgW > PS5_DLG_MAX_WIDTH)
+                dlgW = PS5_DLG_MAX_WIDTH;
+            if (dlgW < PS5_DLG_MIN_WIDTH)
+                dlgW = screenWidth - PS5_DLG_PAD_SMALL;
             int textW = dlgW - 48;
-            char bodyText[96] = "If you can see this dialog, select Yes.";
+            char bodyText[96];
+            snprintf(bodyText, sizeof(bodyText), "%s", _l(_STR_CFM_VMODE_IF_VISIBLE));
             fntFitString(gTheme->fonts[0], bodyText, textW);
 
             int bodyLines = 1;
@@ -2049,7 +2046,7 @@ int guiConfirmVideoMode(void)
             int secondsLeft = (int)((timeEnd - clock()) / CLOCKS_PER_SEC + 1);
             if (secondsLeft < 0)
                 secondsLeft = 0;
-            snprintf(timerStr, sizeof(timerStr), "Reverting in %d seconds...", secondsLeft);
+            snprintf(timerStr, sizeof(timerStr), _l(_STR_CFM_VMODE_REVERTING), secondsLeft);
 
             int topPad = 28;
             int timerGap = 10;
@@ -2063,23 +2060,20 @@ int guiConfirmVideoMode(void)
             int textX = dlgX + 24;
             int buttonY = dlgY + dlgH - bottomPad;
 
-            rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
-            rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
+            rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, PS5_DLG_BORDER_RADIUS, PS5_DLG_BORDER_COLOR);
+            rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, PS5_DLG_FILL_RADIUS, PS5_DLG_FILL_COLOR);
 
-            fntRenderString(gTheme->fonts[0], textX, dlgY + bodyY, ALIGN_LEFT, textW, bodyLines * MENU_ITEM_HEIGHT, bodyText, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+            fntRenderString(gTheme->fonts[0], textX, dlgY + bodyY, ALIGN_LEFT, textW, bodyLines * MENU_ITEM_HEIGHT, bodyText, PS5_TEXT_COLOR);
             fntRenderString(gTheme->fonts[0], textX, dlgY + timerY, ALIGN_LEFT, textW, MENU_ITEM_HEIGHT, timerStr, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x3C));
 
-            u64 yesColor = focusYes ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x24);
-            u64 noColor = !focusYes ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x24);
+            u64 yesColor = focusYes ? PS5_TEXT_COLOR : PS5_BTN_CANCEL_COLOR;
+            u64 noColor = !focusYes ? PS5_TEXT_COLOR : PS5_BTN_CANCEL_COLOR;
 
-            fntRenderString(focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 140, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Yes", yesColor);
-            fntRenderString(!focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 62, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "No", noColor);
+            fntRenderString(focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 140, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_YES), yesColor);
+            fntRenderString(!focusYes ? thmGetPS5SemiBoldFont() : gTheme->fonts[0], dlgX + dlgW - 62, buttonY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_NO), noColor);
 
         } else {
-            rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
-
-            rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
-            rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+            guiDrawClassicDialogFrame();
 
             fntRenderString(gTheme->fonts[0], screenWidth >> 1, gTheme->usedHeight >> 1, ALIGN_CENTER, 0, 0, _l(_STR_CFM_VMODE_CHG), gTheme->textColor);
             guiDrawIconAndText(gSelectButton == KEY_CIRCLE ? CROSS_ICON : CIRCLE_ICON, _STR_BACK, gTheme->fonts[0], 500, 417, gTheme->selTextColor);
@@ -2122,10 +2116,7 @@ int guiGameShowRemoveSettings(config_set_t *configSet, config_set_t *configGame)
 
         guiShow();
 
-        rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
-
-        rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
-        rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+        guiDrawClassicDialogFrame();
 
         fntRenderString(gTheme->fonts[0], screenWidth >> 1, gTheme->usedHeight >> 1, ALIGN_CENTER, 0, 0, _l(_STR_GAME_SETTINGS_PROMPT), gTheme->textColor);
 
@@ -2196,9 +2187,7 @@ void guiManageCheats(void)
 
         guiShow();
 
-        rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
-        rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
-        rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+        guiDrawClassicDialogFrame();
 
         fntRenderString(gTheme->fonts[0], screenWidth >> 1, 60, ALIGN_CENTER, 0, 0, _l(_STR_CHEAT_SELECTION), gTheme->textColor);
 

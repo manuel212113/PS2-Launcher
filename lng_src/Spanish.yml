@@ -170,7 +170,7 @@ translations:
   GSM_SETTINGS: Configuración GSM
   ENABLEGSM: Selector GSM
   HINT_ENABLEGSM: Activa/desactiva el GSM.
-  HINT_GSMVMADO: Modo de pantalla personalizado forzado.
+  HINT_GSMVMODE: Modo de pantalla personalizado forzado.
   XOFFSET: H-POS
   HINT_XOFFSET: Ajuste horizontal.
   YOFFSET: V-POS
@@ -328,3 +328,14 @@ translations:
   FILE_COUNT: 'Archivos encontrados: %i'
   CHEAT_SELECTION: Selección de trucos
   HDD_HINT: Solo se permite un disco duro, habilitar bloquea APA o GPT.
+  CLOSE: Cerrar
+  SAVE: Guardar
+  GAME_OPTIONS: Opciones del juego
+  SAVE_SUCCESSFUL: Guardado exitoso
+  CFM_VMODE_CHANGE_NOW: Cambiar la salida de video ahora?
+  CFM_VMODE_REVERT_INFO: Si la pantalla se pone negra, espera 10 segundos y se revertirá.
+  CFM_VMODE_IF_VISIBLE: Si puedes ver este diálogo, selecciona Sí.
+  CFM_VMODE_REVERTING: Revirtiendo en %d segundos...
+  CHECK_SMB_CONNECTION: Verificar conexión SMB
+  SMB_GAMES: Juegos SMB
+  KEYBOARD: Teclado

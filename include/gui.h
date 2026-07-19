@@ -59,6 +59,21 @@ extern int guiFrameId;
 #define GUI_SCREEN_GAME_MENU 3
 #define GUI_SCREEN_APP_MENU  4
 
+#define PS5_DLG_BORDER_COLOR  GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80)
+#define PS5_DLG_FILL_COLOR    GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA)
+#define PS5_DLG_BORDER_RADIUS 8
+#define PS5_DLG_FILL_RADIUS   7
+#define PS5_DLG_OVERLAY_COLOR GS_SETREG_RGBA(0, 0, 0, 0x60)
+#define PS5_DLG_MAX_WIDTH     420
+#define PS5_DLG_MIN_WIDTH     280
+#define PS5_DLG_PAD_X         96
+#define PS5_DLG_PAD_SMALL     24
+#define PS5_TEXT_COLOR         GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80)
+#define PS5_TEXT_DIM_COLOR     GS_SETREG_RGBA(0x58, 0x58, 0x58, 0x56)
+#define PS5_BTN_UNFOCUSED     GS_SETREG_RGBA(0x78, 0x78, 0x78, 0x70)
+#define PS5_BTN_CANCEL_COLOR  GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x24)
+#define PS5_SPINNER_SPEED     0.08f
+
 void guiSwitchScreen(int target);
 
 void guiReloadScreenExtents();

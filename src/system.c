@@ -1131,7 +1131,7 @@ int sysCheckVMC(const char *prefix, const char *sep, char *name, int createSize,
             createParam.VMC_blocksize = 16;
             createParam.VMC_thread_priority = 0x0f;
             createParam.VMC_card_slot = -1;
-            fileXioDevctl("genvmc:", 0xC0DE0001, (void *)&createParam, sizeof(createParam), NULL, 0);
+            fileXioDevctl("genvmc:", GENVMC_CMD_CREATE, (void *)&createParam, sizeof(createParam), NULL, 0);
         }
     }
     return size;

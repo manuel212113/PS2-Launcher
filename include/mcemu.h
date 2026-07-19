@@ -1,6 +1,11 @@
 #ifndef MCEMU_H
 #define MCEMU_H
 
+#define VMC_MAGIC_COOKIE   0xC0DEFAC0
+#define GENVMC_CMD_CREATE  0xC0DE0001
+#define GENVMC_CMD_FORMAT  0xC0DE0002
+#define GENVMC_CMD_STATUS  0xC0DE0003
+
 typedef struct
 {
     char magic[40];

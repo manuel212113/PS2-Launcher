@@ -40,7 +40,6 @@ static theme_file_t themes[THM_MAX_FILES];
 static const char **guiThemesNames = NULL;
 
 // Global data
-theme_t *gTheme;
 
 
 
@@ -2602,7 +2601,7 @@ static void drawPS5SmbDialogOverlay(void)
     rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
     rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
 
-    fntRenderString(gPS5TitleFont, dlgX + 24, dlgY + 22, ALIGN_LEFT, 0, 0, "SMB Games", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+    fntRenderString(gPS5TitleFont, dlgX + 24, dlgY + 22, ALIGN_LEFT, 0, 0, _l(_STR_SMB_GAMES), GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
 
     if (gPS5SmbDialogState == 2) {
         GSTEXTURE *loader = thmGetTexture(LOADER_ICON);
@@ -2620,12 +2619,12 @@ static void drawPS5SmbDialogOverlay(void)
     if (gPS5SmbDialogState == 1) {
         int yesX = dlgX + dlgW - 150;
         int noX = dlgX + dlgW - 74;
-        fntRenderString(gPS5SmbDialogFocus ? gPS5SemiBoldFont : gPS5RegFont, yesX, btnY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Yes",
+        fntRenderString(gPS5SmbDialogFocus ? gPS5SemiBoldFont : gPS5RegFont, yesX, btnY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_YES),
             gPS5SmbDialogFocus ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0x78, 0x78, 0x78, 0x70));
-        fntRenderString(!gPS5SmbDialogFocus ? gPS5SemiBoldFont : gPS5RegFont, noX, btnY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "No",
+        fntRenderString(!gPS5SmbDialogFocus ? gPS5SemiBoldFont : gPS5RegFont, noX, btnY, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_NO),
             !gPS5SmbDialogFocus ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0x78, 0x78, 0x78, 0x70));
     } else if (gPS5SmbDialogState == 3 || gPS5SmbDialogState == 4) {
-        drawPS5RightIconAndText(CIRCLE_ICON, "Close", gPS5SemiBoldFont, dlgX + dlgW - 24, btnY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+        drawPS5RightIconAndText(CIRCLE_ICON, _l(_STR_CLOSE), gPS5SemiBoldFont, dlgX + dlgW - 24, btnY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
     }
 }
 
@@ -2647,7 +2646,7 @@ static void drawPS5SmbCheckDialogOverlay(void)
     rmDrawRoundedRect(dlgX - 1, dlgY - 1, dlgW + 2, dlgH + 2, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
     rmDrawRoundedRect(dlgX, dlgY, dlgW, dlgH, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
 
-    fntRenderString(gPS5TitleFont, dlgX + 24, dlgY + 22, ALIGN_LEFT, 0, 0, "Check SMB Connection", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+    fntRenderString(gPS5TitleFont, dlgX + 24, dlgY + 22, ALIGN_LEFT, 0, 0, _l(_STR_CHECK_SMB_CONNECTION), GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
 
     if (gPS5SmbCheckDialogState == 1) {
         GSTEXTURE *loader = thmGetTexture(LOADER_ICON);
@@ -2663,7 +2662,7 @@ static void drawPS5SmbCheckDialogOverlay(void)
     }
 
     if (gPS5SmbCheckDialogState == 2 || gPS5SmbCheckDialogState == 3) {
-        drawPS5RightIconAndText(CIRCLE_ICON, "Close", gPS5SemiBoldFont, dlgX + dlgW - 24, btnY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+        drawPS5RightIconAndText(CIRCLE_ICON, _l(_STR_CLOSE), gPS5SemiBoldFont, dlgX + dlgW - 24, btnY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
     }
 }
 
@@ -3489,9 +3488,9 @@ static void drawPS5Launcher(struct menu_list *menu, struct submenu_list *item, s
             }
 
             drawPS5IconAndText(CROSS_ICON, "Capture", gPS5SemiBoldFont, 50, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
-            drawPS5IconAndText(SQUARE_ICON, "Save", gPS5SemiBoldFont, 170, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+            drawPS5IconAndText(SQUARE_ICON, _l(_STR_SAVE), gPS5SemiBoldFont, 170, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
             drawPS5IconAndText(TRIANGLE_ICON, "Nav Test", gPS5SemiBoldFont, 270, footerY, gPS5ControllerLogNavTestEnabled ? GS_SETREG_RGBA(0x90, 0xFF, 0xA8, 0x80) : GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
-            drawPS5RightIconAndText(CIRCLE_ICON, "Close", gPS5SemiBoldFont, screenWidth - 50, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+            drawPS5RightIconAndText(CIRCLE_ICON, _l(_STR_CLOSE), gPS5SemiBoldFont, screenWidth - 50, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
             return;
         }
 
@@ -3590,7 +3589,7 @@ static void drawPS5Launcher(struct menu_list *menu, struct submenu_list *item, s
             drawPS5IconAndText(CROSS_ICON, "Modify", gPS5SemiBoldFont, 50, footerY, modifyColor);
 
             int nextRightX = drawPS5RightIconAndText(CIRCLE_ICON, "Back", gPS5SemiBoldFont, screenWidth - 50, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
-            int saveLeftX = drawPS5RightIconAndText(SQUARE_ICON, "Save", gPS5SemiBoldFont, nextRightX - 24, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+            int saveLeftX = drawPS5RightIconAndText(SQUARE_ICON, _l(_STR_SAVE), gPS5SemiBoldFont, nextRightX - 24, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
             drawPS5RightIconAndText(TRIANGLE_ICON, "Check Connection", gPS5SemiBoldFont, saveLeftX - 24, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
 
             if (gPS5SaveNotifyFrame && guiFrameId >= (int)gPS5SaveNotifyFrame && guiFrameId - (int)gPS5SaveNotifyFrame < 120) {
@@ -3600,7 +3599,7 @@ static void drawPS5Launcher(struct menu_list *menu, struct submenu_list *item, s
                 int toastY = 386;
                 rmDrawRoundedRect(toastX - 1, toastY - 1, toastW + 2, toastH + 2, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
                 rmDrawRoundedRect(toastX, toastY, toastW, toastH, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
-                fntRenderString(gPS5SemiBoldFont, toastX + toastW / 2, toastY + toastH / 2, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Save Successful", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+                fntRenderString(gPS5SemiBoldFont, toastX + toastW / 2, toastY + toastH / 2, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_SAVE_SUCCESSFUL), GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
             } else if (gPS5SaveNotifyFrame && guiFrameId - (int)gPS5SaveNotifyFrame >= 120) {
                 gPS5SaveNotifyFrame = 0;
             }
@@ -3767,7 +3766,7 @@ static void drawPS5Launcher(struct menu_list *menu, struct submenu_list *item, s
         fntRenderString(gPS5SemiBoldFont, textStartX, footerY, ALIGN_LEFT | ALIGN_VCENTER, 0, 0, "irfanmatheena", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
 
         // 5. Draw footer action helpers as measured groups, so icons and text cannot overlap.
-        int saveGroupX = drawPS5RightIconAndText(SQUARE_ICON, "Save", gPS5SemiBoldFont, screenWidth - 50, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+        int saveGroupX = drawPS5RightIconAndText(SQUARE_ICON, _l(_STR_SAVE), gPS5SemiBoldFont, screenWidth - 50, footerY, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
 
         if (gPS5SubSel == 0) { // Resolution focused
             u64 applyColor = (gVMode != gPS5TempVMode) ? GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80) : GS_SETREG_RGBA(0x58, 0x58, 0x58, 0x50);
@@ -3781,7 +3780,7 @@ static void drawPS5Launcher(struct menu_list *menu, struct submenu_list *item, s
             int toastY = 386;
             rmDrawRoundedRect(toastX - 1, toastY - 1, toastW + 2, toastH + 2, 8, GS_SETREG_RGBA(0x30, 0x30, 0x30, 0x80));
             rmDrawRoundedRect(toastX, toastY, toastW, toastH, 7, GS_SETREG_RGBA(0x08, 0x08, 0x08, 0xFA));
-            fntRenderString(gPS5SemiBoldFont, toastX + toastW / 2, toastY + toastH / 2, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, "Save Successful", GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
+            fntRenderString(gPS5SemiBoldFont, toastX + toastW / 2, toastY + toastH / 2, ALIGN_CENTER | ALIGN_VCENTER, 0, 0, _l(_STR_SAVE_SUCCESSFUL), GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
         } else if (gPS5SaveNotifyFrame && guiFrameId - (int)gPS5SaveNotifyFrame >= 120) {
             gPS5SaveNotifyFrame = 0;
         }
@@ -3829,7 +3828,7 @@ static void drawPS5Launcher(struct menu_list *menu, struct submenu_list *item, s
                 fntRenderString(!missingFocused ? gPS5SemiBoldFont : gPS5RegFont, listX, firstY, ALIGN_LEFT | ALIGN_VCENTER, 0, 0, "Full games", !missingFocused ? focusedColor : idleColor);
                 fntRenderString(missingFocused ? gPS5SemiBoldFont : gPS5RegFont, listX, firstY + rowStep, ALIGN_LEFT | ALIGN_VCENTER, 0, 0, "Missing games", missingFocused ? focusedColor : idleColor);
 
-                drawPS5RightIconAndText(CIRCLE_ICON, "Cancel", gPS5SemiBoldFont, dlgX + dlgW - 24, dlgY + dlgH - 32, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x78));
+                drawPS5RightIconAndText(CIRCLE_ICON, _l(_STR_CANCEL), gPS5SemiBoldFont, dlgX + dlgW - 24, dlgY + dlgH - 32, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x78));
                 drawPS5RightIconAndText(CROSS_ICON, "Start", gPS5SemiBoldFont, dlgX + dlgW - 132, dlgY + dlgH - 32, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x78));
                 return;
             }
@@ -3892,9 +3891,9 @@ static void drawPS5Launcher(struct menu_list *menu, struct submenu_list *item, s
             int btnRight = dlgX + dlgW - 24;
             u64 btnColor = GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x68);
             if (gPS5CoverDownloadStatus == PS5_COVER_DOWNLOAD_WIP) {
-                drawPS5RightIconAndText(CIRCLE_ICON, "Cancel", gPS5SemiBoldFont, btnRight, btnY, btnColor);
+                drawPS5RightIconAndText(CIRCLE_ICON, _l(_STR_CANCEL), gPS5SemiBoldFont, btnRight, btnY, btnColor);
             } else {
-                drawPS5RightIconAndText(CIRCLE_ICON, "Close", gPS5SemiBoldFont, btnRight, btnY, btnColor);
+                drawPS5RightIconAndText(CIRCLE_ICON, _l(_STR_CLOSE), gPS5SemiBoldFont, btnRight, btnY, btnColor);
             }
         }
 

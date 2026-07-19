@@ -600,7 +600,7 @@ void bdmLaunchGame(item_list_t *itemList, int id, config_set_t *configSet)
         }
 
         for (i = 0; i < size_bdm_mcemu_irx; i++) {
-            if (((u32 *)&bdm_mcemu_irx)[i] == (0xC0DEFAC0 + vmc_id)) {
+            if (((u32 *)&bdm_mcemu_irx)[i] == (VMC_MAGIC_COOKIE + vmc_id)) {
                 if (bdm_vmc_infos.active)
                     size_mcemu_irx = size_bdm_mcemu_irx;
                 memcpy(&((u32 *)&bdm_mcemu_irx)[i], &bdm_vmc_infos, sizeof(bdm_vmc_infos_t));

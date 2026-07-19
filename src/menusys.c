@@ -3331,7 +3331,7 @@ void menuRenderGameMenu()
 
             drawPS5GameHeaderArtwork(gameTitle, artX, artY, artW, artH);
             fntRenderString(thmGetPS5HeaderFont(), titleX, 12, ALIGN_LEFT, ps5Width - titleX - 64, 0, gameTitle, GS_SETREG_RGBA(0xFF, 0xFF, 0xFF, 0x80));
-            fntRenderString(gTheme->fonts[1], titleX, 36, ALIGN_LEFT, 0.78f, 0.78f, "Game Options", GS_SETREG_RGBA(0x58, 0x58, 0x58, 0x56));
+            fntRenderString(gTheme->fonts[1], titleX, 36, ALIGN_LEFT, 0.78f, 0.78f, _l(_STR_GAME_OPTIONS), GS_SETREG_RGBA(0x58, 0x58, 0x58, 0x56));
         }
 
         {
@@ -3370,8 +3370,8 @@ void menuRenderGameMenu()
 
         {
             int nextX = drawPS5GameIconAndText(CROSS_ICON, "Play", semiBoldFont, listX, footerY, footerColor);
-            drawPS5GameIconAndText(SQUARE_ICON, "Save", semiBoldFont, nextX + 22, footerY, footerColor);
-            drawPS5GameRightIconAndText(CIRCLE_ICON, "Close", semiBoldFont, ps5Width - 64, footerY, footerColor);
+            drawPS5GameIconAndText(SQUARE_ICON, _l(_STR_SAVE), semiBoldFont, nextX + 22, footerY, footerColor);
+            drawPS5GameRightIconAndText(CIRCLE_ICON, _l(_STR_CLOSE), semiBoldFont, ps5Width - 64, footerY, footerColor);
         }
         return;
     }
